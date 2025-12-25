@@ -6,7 +6,7 @@ on:
     paths:
       - "VSCARTEMISFULL.aln"
       - "ALNSCHEMA/policymeshschema.aln"
-      - "aln-language-spec.aln"
+      - "aln-language-spec.aln"[1]
 
 jobs:
   validate-aln-compliance:
@@ -14,7 +14,21 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4[1]
+
+      - name: Set up Rust toolchain
+        uses: dtolnay/rust-toolchain@stable[1]
+
+      - name: Cache Cargo build artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            target
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-[1]
 
       - name: Build ALN validator
         run: |
@@ -26,3 +40,22 @@ jobs:
             --schema ALNSCHEMA/policymeshschema.aln \
             --input VSCARTEMISFULL.aln \
             --require-rule compliancecontextbindrequired
+
+      - name: Validate language spec ALN (if present)
+        run: |
+          if [ -f "aln-language-spec.aln" ]; then
+            ./target/release/aln-validator \
+              --schema ALNSCHEMA/policymeshschema.aln \
+              --input aln-language-spec.aln; \
+          else \
+            echo "aln-language-spec.aln not present, skipping."; \
+          fi
+
+      - name: Upload validator logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aln-validator-logs
+          path: |
+            validator.log
+            target/release/aln-validator[1]

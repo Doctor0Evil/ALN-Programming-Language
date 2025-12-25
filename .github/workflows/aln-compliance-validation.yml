@@ -1,0 +1,28 @@
+name: "ALN Compliance Validation"
+
+on:
+  pull_request:
+    branches: [ "main", "master" ]
+    paths:
+      - "VSCARTEMISFULL.aln"
+      - "ALNSCHEMA/policymeshschema.aln"
+      - "aln-language-spec.aln"
+
+jobs:
+  validate-aln-compliance:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build ALN validator
+        run: |
+          cargo build --package aln-validator --release
+
+      - name: Validate VSCARTEMISFULL.aln against policymeshschema
+        run: |
+          ./target/release/aln-validator \
+            --schema ALNSCHEMA/policymeshschema.aln \
+            --input VSCARTEMISFULL.aln \
+            --require-rule compliancecontextbindrequired

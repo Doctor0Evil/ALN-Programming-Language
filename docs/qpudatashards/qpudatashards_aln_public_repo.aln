@@ -1,22 +1,124 @@
-filename,qpudatashards_aln_public_repo.aln
+# docs/qpudatashards/qpudatashards_aln_public_repo.aln
+
 destination,docs/qpudatashards
 format,ALN-CSV,1.0
+status,alpha
+language,ALN
+install,clone+cargo+node+standalone
+cli,aln
 
 rowtype,id,path,role,status
 doc,readme-core,README.md,project-intro,planned
 doc,lang-guide,docs/language-guide.md,tutorial,planned
 doc,spec,docs/spec.md,formal-language-spec,planned
 doc,design,docs/design-goals.md,goals-and-nongoals,planned
+doc,grammar,docs/grammar.md,formal-grammar,planned
+doc,roadmap,docs/roadmap.md,public-roadmap,planned
+doc,naming,docs/naming-and-trademarks.md,branding-boundaries,planned
+
 tool,cli,cmd/aln-cli,command-line-interface,planned
+tool,pack-rust,cmd/aln-cli/pack-rust,tooling-backend,planned
+tool,pack-node,cmd/aln-cli/pack-node,tooling-backend,planned
+
 examples,minimal,examples/minimal_qpu_datashard.aln,hello-world,planned
 examples,smart-city,examples/smart_city_nodes.aln,infra-pattern,planned
+examples,game-stub,examples/game_engine_integration.aln,engine-stub,planned
+examples,policy,examples/policy_safety_shard.aln,policy-safety,planned
+examples,e2e,examples/e2e_hello_world_pipeline.aln,end-to-end,planned
+
 governance,contrib,CONTRIBUTING.md,contribution-rules,planned
 governance,coc,CODE_OF_CONDUCT.md,community-standards,planned
-ci,gha,.github/workflows/ci.yml,lint-test-release,planned
+governance,rfc,docs/rfcs/0001-aln-spec-process.md,spec-rfc-process,planned
+governance,security,SECURITY.md,security-reporting,planned
+governance,license,LICENSE,osi-license,planned
 
-math,entropy-combo,"H_total = p_code * H_code + p_data * H_data","Combine code-structure entropy H_code and data-structure entropy H_data by weighting them with p_code,p_data that sum to 1; compute each via standard Shannon entropy, then form the convex combination."
-science,pl-lang-fact,"Public programming languages that ship clear docs, examples, and a working CLI with tests see far higher adoption than languages that remain design-only or undocumented."
-legal,terms,"This public ALN repository shall contain only non-restricted, non-classified, and non-enterprise-specific logic; contributors agree not to add internal network topologies, authentication secrets, or code that circumvents safety and compliance layers, and all changes remain under an OSI-approved license with clear IP attribution."
-geo,evidence,"Phoenix-AZ;San-Francisco-CA;Seattle-WA;Berlin-DE;Singapore-SG"
+ci,gha-main,.github/workflows/ci.yml,lint-test-release,planned
+ci,gha-examples,.github/workflows/examples.yml,run-examples,planned
+ci,badge,README.md,ci-status-badge,planned
 
-hex-answer,unify,"0x414c4e5f5055424c49435f5245504f5f524f41444d41505f53554343455353"
+interop,mermaid,docs/mermaid-interoperability.md,diagram-mapping,planned
+interop,markdown,docs/markdown-embedding.md,md-embedding,planned
+interop,csv,docs/csv-schema.md,csv-mapping,planned
+
+math,entropy-combo,"H_total = p_code * H_code + p_data * H_data","Combine code-structure entropy H_code and data-structure entropy H_data with p_code,p_data in [0,1], p_code + p_data = 1; each term via Shannon entropy; H_total convex combination.",stable
+science,pl-lang-fact,"Languages that ship clear docs, runnable examples, and a working CLI with tests gain higher real-world adoption than undocumented or design-only languages.",stable
+legal,terms,"This public ALN repository shall contain only non-restricted, non-classified, and non-enterprise-specific logic; no internal network topologies, authentication secrets, or constructs that circumvent safety or compliance layers are permitted; all contributions remain under an OSI‑approved license with clear IP attribution.",stable
+legal,safety,"Any attempt to introduce Death-Network, classified, or enterprise-only semantics into the public ALN spec, examples, or tooling will be rejected during review and CI; reviewers must enforce this policy as a hard gate.",stable
+
+geo,evidence,"Phoenix-AZ;San-Francisco-CA;Seattle-WA;Berlin-DE;Singapore-SG",attestation
+hex-answer,unify,"0x414c4e5f5055424c49435f5245504f5f524f41444d41505f53554343455353",sealed
+
+install,toolchain-rust,"cargo install --path cmd/aln-cli","Primary reference implementation in Rust; requires stable toolchain and standard build tools."
+install,toolchain-node,"npm install -g @aln-lang/cli","Optional Node.js wrapper for editor tooling; CLI subcommands must match aln-cli help output."
+install,from-source,"git clone https://github.com/Doctor0Evil/ALN-Programming-Language.git && cd ALN-Programming-Language && cargo build --release","Authoritative build-from-source path for contributors."
+
+cli,entry,aln,"Top-level CLI entrypoint; must be on PATH after install."
+cli,sub-validate,"aln validate PATH","Validate ALN/ALN-CSV files against docs/spec.md and docs/grammar.md; exits non-zero on schema or grammar errors."
+cli,sub-lint,"aln lint PATH","Static lint for style rules defined in docs/language-guide.md and CONTRIBUTING.md."
+cli,sub-render,"aln render PATH --format mermaid","Render ALN infra graphs and QPU.Datashard views into mermaid-compatible diagrams for documentation."
+cli,sub-compile,"aln compile PATH --target csv","Compile ALN sources into normalized CSV suitable for downstream engines and schedulers."
+cli,sub-help,"aln --help","Canonical help output; snapshot of this text must be checked into docs/cli-help.txt for reproducible reference."
+
+readme,summary,"ALN is an Auditable Legal Notation and infra/BCI/smart-city DSL for describing deterministic systems as CSV-like tables that compile into concrete engine inputs rather than remaining conceptual.",alpha
+readme,status,"Project status: experimental/alpha; APIs, rowtypes, and CLI flags may change until 0.1.0; contributors should pin to tagged releases for production use.",alpha
+readme,not-affiliated,"Not affiliated with Alan IF language, Alan (alantech), alang, or other similarly named projects; ALN naming and trademarks are scoped to this repository and published specs only.",alpha
+
+design,goal-determinism,"Primary goal: deterministic infrastructure, QPU.Datashard, and augmented-human safety descriptions that render to reproducible CSV and artifacts without hidden side-effects.",locked
+design,goal-auditable,"Goal: every ALN file must be human-auditable and machine-checked, with clear mapping from rowtypes to runtime effects and safety envelopes.",locked
+design,goal-public,"Goal: keep the public ALN spec free of internal, classified, or enterprise-only semantics so that open-source users can rely on a stable, public contract.",locked
+design,nongoal-hw-secrets,"Non-goal: ALN will not encode hardware keys, TPM secrets, or proprietary authentication material; such data must live in separate, private mechanisms.",locked
+design,nongoal-runtime,"Non-goal: ALN is not a general-purpose Turing-complete runtime; it is a declarative description language that compiles to existing engines.",locked
+design,compat-mermaid,"Compatibility: ALN schemas should be straightforward to visualize via mermaid and embed within Markdown documentation.",locked
+
+spec,grammar-file,"docs/grammar.md","Defines lexical tokens, comments, rowtype names, required/optional columns, and CSV/ALN-CSV normalization rules."
+spec,tokens,"IDENT, ROWTYPE, ID, PATH, ROLE, STATUS, STRING, NUMBER, HEX, COMMENT","Token families for parser; concrete BNF/EBNF lives in docs/grammar.md."
+spec,rowtypes-core,"doc,tool,examples,governance,ci,math,science,legal,geo,hex-answer,install,cli,readme,design,spec,interop","Core rowtypes for the public ALN repo; extensions must be proposed via RFC."
+spec,comments,"Lines starting with # or // shall be treated as comments; inline comments after a # are allowed in non-string columns.","Comments never affect semantics."
+spec,csv-mapping,"All ALN tables normalize to RFC 4180 CSV with UTF-8 encoding; quoting rules must be unambiguous and round-trip safe.","Required for downstream tool portability."
+
+guide,getting-started,"docs/language-guide.md#getting-started","Intro section: minimal ALN file, how to run aln validate, and first render pipeline."
+guide,types,"docs/language-guide.md#types","Explains scalar cells, enums for rowtype/role/status, and hex/string fields."
+guide,control-flow,"docs/language-guide.md#control-flow","Outlines declarative dependency ordering via id/path references instead of imperative control flow."
+guide,modules,"docs/language-guide.md#modules","Describes how to split large systems into multiple ALN files and include/compose them via CLI tooling."
+guide,interop,"docs/language-guide.md#interop","Documents how ALN maps to CSV, mermaid, and downstream infra engines."
+
+example,minimal-qpu,"examples/minimal_qpu_datashard.aln","Smallest valid QPU.Datashard containing a single shard, entropy parameters, and a renderable infra diagram."
+example,smart-city,"examples/smart_city_nodes.aln","Topology of smart-city nodes, sensor buses, and safety envelopes expressed as ALN rows."
+example,game-stub,"examples/game_engine_integration.aln","Purely declarative integration stub for a game/engine data pipeline without bundling engine code or assets."
+example,policy-shard,"examples/policy_safety_shard.aln","Policy/safety shard defining constraints for augmented-human and infra operations."
+example,e2e-readme,"README.md","End-to-end example wired into README: ALN file → aln CLI → rendered CSV or visualization, mirroring standard “Hello World” flows."
+
+contrib,style,"CONTRIBUTING.md","Defines coding style, ALN style, commit message format, and tests required for PRs."
+contrib,out-of-scope,"CONTRIBUTING.md#out-of-scope","Lists restricted features: no Death-Network, no internal topologies, no secret bindings, no proprietary opcodes."
+contrib,tests,"CONTRIBUTING.md#tests","Explains how to run cargo test, aln test, and example golden-file checks before sending a PR."
+
+coc,reference,"CODE_OF_CONDUCT.md","Adopts a standard open-source code of conduct and reporting channels."
+coc,governance,"docs/rfcs/0001-aln-spec-process.md","Lightweight RFC process for changing ALN spec, adding rowtypes, or altering CLI semantics."
+
+testing,unit,"tests/unit","Unit tests for parser, validator, linter, and CLI commands."
+testing,golden,"tests/golden","Golden-file tests where inputs and rendered outputs must match checked-in expectations."
+testing,cli,"tests/cli","End-to-end CLI tests covering validate, lint, render, and compile invocations."
+
+ci,actions,".github/workflows/ci.yml","Runs format, lint, and test on PRs and pushes to main; required for merge."
+ci,badge-url,"https://github.com/Doctor0Evil/ALN-Programming-Language/actions","CI badge target referenced from README."
+ci,release,.github/workflows/release.yml,"Builds tagged releases, attaches binaries, and updates CHANGELOG.md.",planned
+
+release,tags,"v0.0.1, v0.1.0, ...","Semantic versioning; tags define the ALN spec and CLI contract users may rely on."
+release,changelog,"CHANGELOG.md","Human-readable summary of changes per version, including spec and CLI updates."
+release,artifacts,"GitHub Releases","Platform-specific binaries and checksums for aln CLI so users do not have to build from source."
+
+naming,not-affiliated,"docs/naming-and-trademarks.md#not-affiliated","Clarifies non-affiliation with Alan IF, Alan (alantech), alang, and similar projects."
+naming,usage,"docs/naming-and-trademarks.md#usage","Outlines acceptable use of the ALN name and logo in third-party tools and papers."
+
+safety,boundaries,"docs/design-goals.md#safety-boundaries","States that the public ALN repo excludes internal Death-Network, classified, or enterprise-only constructs; reviewers must enforce this by policy and CI."
+safety,qpu-public,"docs/qpudatashards/README.md","Documents that QPU.Datashard examples are public-only, non-secret, and free of internal deployment coordinates."
+safety,bc-limits,"docs/spec.md#boundaries","Spec section noting that chain/network addresses must be public or test-only when included in examples."
+
+entropy,weights,"p_code=0.6,p_data=0.4","Suggested default weights when combining structural code entropy and data entropy for infra/QPU shards."
+entropy,usage,"docs/spec.md#entropy-metrics","Entropy formula usage: H_total guides how dense QPU.Datashard partitions and infra descriptions should be for observability."
+
+hello,readme-flow,"README.md#quickstart","End-to-end worked example: create minimal_qpu_datashard.aln, run aln validate and aln render, inspect generated CSV/diagram."
+
+geo,contributors,"Phoenix-AZ;San-Francisco-CA;Seattle-WA;Berlin-DE;Singapore-SG","Non-sensitive geographic evidence of distributed contributions and adoption."
+
+hex,repo-unify,"0x414c4e5f5055424c49435f5245504f5f524f41444d41505f53554343455353","Hex attestation string signalling that QPU.Datashard ALN public repo roadmap is unified, public, and success-oriented."

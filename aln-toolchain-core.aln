@@ -1,0 +1,96 @@
+aln ALNTOOLCHAINCORE
+version 1.0.0
+
+language
+  id ALN
+  name "Augmented Logic Network Language"
+  status active
+  implstatus toolchain-minimal
+  specfile ALN-Syntax.json
+  defaultencoding utf-8
+
+toolchain
+  hostos linux,windows,macos
+  minrust 1.75.0
+  mingolang 1.20
+  requiredtools cargo,go,git
+
+component parser
+  lang rust
+  crate aln-parser
+  target bin
+  entrypoint src/main.rs
+  description "Streaming ALN parser with schema-aware validation."
+  inputs .aln
+  outputs .aln.ast.json
+
+component validator
+  lang rust
+  crate aln-validator
+  target bin
+  entrypoint src/main.rs
+  description "Schema + rule validator for ALN files."
+  inputs .aln,.json
+  outputs .aln.report.json
+
+component cli
+  lang rust
+  crate aln-cli
+  target bin
+  entrypoint src/main.rs
+  description "User-facing ALN CLI: parse, validate, format."
+  inputs .aln
+  outputs stdout,files
+
+component gotasks
+  lang go
+  module aln/scripts
+  source gotasks.go
+  target bin
+  output gotasks
+
+profiles
+  profile dev
+    optlevel debug
+    lints strict
+    tests enabled
+  profile ci
+    optlevel release
+    lints strict
+    tests enabled
+    forbidwarnings true
+  profile release
+    optlevel release
+    lints strict
+    tests enabled
+    forbidwarnings true
+    signedartifacts true
+
+ci
+  provider github-actions
+  workflows aln-language-ci.yml,aln-go-ci.yml
+  requiredstatus
+    check ALN Rust Build
+    check ALN Rust Tests
+    check ALN Rust Lints
+    check ALN Go Utilities
+
+artifacts
+  artifact aln-parser
+    type binary
+    path target/release/aln-parser
+  artifact aln-validator
+    type binary
+    path target/release/aln-validator
+  artifact aln-cli
+    type binary
+    path target/release/aln-cli
+  artifact gotasks
+    type binary
+    path gotasks
+
+gointegration
+  scriptsdir aln/scripts
+  vetpattern ./...
+  testpattern ./...
+  buildtarget aln/scripts/gotasks.go

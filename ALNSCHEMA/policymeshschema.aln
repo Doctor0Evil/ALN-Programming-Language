@@ -1,0 +1,89 @@
+aln ALNSCHEMA
+id policymeshschema
+version 1.0.1
+
+scalar string
+  maxlength 4096
+
+scalar int32
+  min -2147483648
+  max 2147483647
+
+scalar int64
+  min 0
+  max 9223372036854775807
+
+type ComplianceContext
+  field profileId
+    type string
+    required true
+    minlength 1
+  field actor
+    type string
+    required true
+    minlength 1
+  field resource
+    type string
+    required true
+    minlength 1
+  field action
+    type string
+    required true
+    enum read,write,update,delete,exportplaintext,scale,keyread
+  field metadata
+    type mapstring,string
+    required false
+    maxentries 64
+
+type ComplianceEvent
+  field id
+    type string
+    required true
+  field timestamp
+    type int64
+    required true
+    min 0
+  field actor
+    type string
+    required true
+  field resource
+    type string
+    required true
+  field action
+    type string
+    required true
+  field result
+    type string
+    required true
+  field hash
+    type string
+    required false
+
+type SwarmPolicy
+  field name
+    type string
+    required true
+  field minReplicas
+    type int32
+    required true
+    min 0
+  field maxReplicas
+    type int32
+    required true
+    min 1
+  field cpuPerReplicaMilli
+    type int32
+    required true
+    min 1
+  field memoryPerReplicaMiB
+    type int32
+    required true
+    min 1
+  rule replicabounds
+    expr "maxReplicas >= minReplicas"
+    onfail ERROR
+
+rule compliancecontextbindrequired
+  scope VSCARTEMISFULL.governance
+  expr "exists(complianceprofile) and exists(auditlogging)"
+  onfail ERROR

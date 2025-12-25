@@ -1,0 +1,70 @@
+aln ALNLANGSPEC
+version 1.0.0
+
+language
+  id ALN
+  name "Augmented Logic Network Language"
+  status active
+  defaultencoding utf-8
+
+syntax
+  specfile ALN-Syntax.json
+  specversion 1.0.0
+  location aln/spec/ALN-Syntax.json
+  checksumhex 9F3C8D2A1E7B4F6C5D8A9B0C1D2E3F4A5B6C7D8E9F0A1B2C3D4E5F6A7B8C9D0E1F
+  mode normative
+  description "Normative grammar and type-system definition for ALN documents, including compliance and quantum-assurance constructs."
+
+parsing
+  whitespace significant false
+  comments
+    lineprefix "#"
+    blockstart "/*"
+    blockend "*/"
+  tokens
+    identifier pattern "[A-Za-z_][A-Za-z0-9_-]*"
+    integer pattern "[0-9]+"
+    float pattern "[0-9]+\\.[0-9]+"
+    string pattern "\"([^\"\\\\]|\\\\.)*\""
+  structures
+    top-level "aln <Identifier> [version <String>] <Sections*>"
+    section "identifier <Fields*>"
+    field "identifier value"
+  validation
+    enabletypes true
+    enableschema true
+    schemafile "ALNSCHEMA/policymeshschema.aln"
+
+assurance
+  quantumcompliance
+    corefile "aln/modules/security/compliance/quantumcompliancecore.aln"
+    activationpoints repositoryprecommit,containergeneration,apihook
+    metrics
+      hipaa 0.94
+      gdpr 0.93
+      legacysystem 0.71
+    auditlog
+      signaturemethod DID-Signed
+      integritymodel Forensic-Grade
+      retentionpolicy Immutable
+      storagelocation "Blockchain-Anchored Ledger"
+
+toolchainbinding
+  parser
+    binary "target/release/aln-parser"
+    input ".aln"
+    output ".aln.ast.json"
+  validator
+    binary "target/release/aln-validator"
+    schemainput ".aln"
+    datainput ".aln"
+    reportoutput ".aln.report.json"
+  cli
+    binary "target/release/aln-cli"
+    commands parse,validate,format
+
+profiles
+  profile ci
+    parsermode strict
+    validatormode strict
+    maxfilebytes 1048576

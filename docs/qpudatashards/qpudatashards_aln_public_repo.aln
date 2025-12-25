@@ -1,0 +1,22 @@
+filename,qpudatashards_aln_public_repo.aln
+destination,docs/qpudatashards
+format,ALN-CSV,1.0
+
+rowtype,id,path,role,status
+doc,readme-core,README.md,project-intro,planned
+doc,lang-guide,docs/language-guide.md,tutorial,planned
+doc,spec,docs/spec.md,formal-language-spec,planned
+doc,design,docs/design-goals.md,goals-and-nongoals,planned
+tool,cli,cmd/aln-cli,command-line-interface,planned
+examples,minimal,examples/minimal_qpu_datashard.aln,hello-world,planned
+examples,smart-city,examples/smart_city_nodes.aln,infra-pattern,planned
+governance,contrib,CONTRIBUTING.md,contribution-rules,planned
+governance,coc,CODE_OF_CONDUCT.md,community-standards,planned
+ci,gha,.github/workflows/ci.yml,lint-test-release,planned
+
+math,entropy-combo,"H_total = p_code * H_code + p_data * H_data","Combine code-structure entropy H_code and data-structure entropy H_data by weighting them with p_code,p_data that sum to 1; compute each via standard Shannon entropy, then form the convex combination."
+science,pl-lang-fact,"Public programming languages that ship clear docs, examples, and a working CLI with tests see far higher adoption than languages that remain design-only or undocumented."
+legal,terms,"This public ALN repository shall contain only non-restricted, non-classified, and non-enterprise-specific logic; contributors agree not to add internal network topologies, authentication secrets, or code that circumvents safety and compliance layers, and all changes remain under an OSI-approved license with clear IP attribution."
+geo,evidence,"Phoenix-AZ;San-Francisco-CA;Seattle-WA;Berlin-DE;Singapore-SG"
+
+hex-answer,unify,"0x414c4e5f5055424c49435f5245504f5f524f41444d41505f53554343455353"
